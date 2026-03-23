@@ -1,1 +1,27 @@
+// Pinos dos LEDs e botões
+const int ledPins[4] = {8, 9, 10, 11};
+const int btnPins[4] = {2, 3,  4,  5};
 
+bool estadoAnterior[4] = {false, false, false, false};
+bool ledLigado[4]      = {false, false, false, false};
+
+void setup() {
+  for (int i = 0; i < 4; i++) {
+    pinMode(ledPins[i], OUTPUT);
+    pinMode(btnPins[i], INPUT_PULLUP); // botão activo em LOW
+  }
+}
+
+void loop() {
+  for (int i = 0; i < 4; i++) {
+    bool press = (digitalRead(btnPins[i]) == LOW);
+
+    // Flanco de descida: nova pressão → alterna o LED
+    if (press && !estadoAnterior[i]) {
+      ledLigado[i] = !ledLigado[i];
+      digitalWrite(ledPins[i], ledLigado[i] ? HIGH : LOW);
+    }
+    estadoAnterior[i] = press;
+  }
+  delay(20); // debounce simples
+}
